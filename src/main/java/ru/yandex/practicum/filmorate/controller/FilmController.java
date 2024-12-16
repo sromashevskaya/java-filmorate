@@ -23,8 +23,8 @@ public class FilmController {
     public Film createFilm(@RequestBody Film film) {
         log.info("Добавление нового фильма: {}", film.getName());
         validate(film);
-        film.setId((long) id++);
-        films.put(Math.toIntExact((film.getId())), film);
+        film.setId(id++);
+        films.put(film.getId(), film);
         log.trace("Фильм {} добавлен, его id {}", film, film.getId());
         return film;
     }
