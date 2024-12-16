@@ -25,7 +25,7 @@ public class FilmController {
         validate(film);
         film.setId((long) id++);
         films.put(Math.toIntExact((film.getId())), film);
-        log.trace("Фильм {} добавлен, его id {}",film, film.getId());
+        log.trace("Фильм {} добавлен, его id {}", film, film.getId());
         return film;
     }
 
