@@ -13,7 +13,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
-    private final Map<Integer, Film> films = new HashMap<>();
+    private final Map<Long, Film> films = new HashMap<>();
     private Long id = Long.valueOf(1);
 
     @Override
@@ -24,7 +24,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film createFilm(Film newFilm) {
         newFilm.setId(id++);
-        films.put(Math.toIntExact(newFilm.getId()), newFilm);
+        films.put(newFilm.getId(), newFilm);
         return newFilm;
     }
 

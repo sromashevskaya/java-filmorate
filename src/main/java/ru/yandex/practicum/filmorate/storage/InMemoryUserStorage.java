@@ -11,7 +11,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Component
 public class InMemoryUserStorage implements UserStorage {
-    private final Map<Integer, User> users = new HashMap<>();
+    private final Map<Long, User> users = new HashMap<>();
     private int id = 1;
 
     @Override
@@ -27,7 +27,7 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User createUser(User newUser) {
         newUser.setId((long) id++);
-        users.put(Math.toIntExact(newUser.getId()), newUser);
+        users.put(newUser.getId(), newUser);
         return newUser;
     }
 
