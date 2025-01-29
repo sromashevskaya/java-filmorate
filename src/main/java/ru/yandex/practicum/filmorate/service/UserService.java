@@ -76,7 +76,8 @@ public class UserService {
         User user = getUserByIdOrThrow(userId);
         User friend = getUserByIdOrThrow(friendId);
         if (user.getFriends().contains(friendId)) {
-            throw new NotFoundException("Друг с указанным id уже существует");
+          //  throw new NotFoundException("Друг с указанным id уже существует");
+            return;
         }
         user.getFriends().add(friendId);
         friend.getFriends().add(userId);
@@ -103,6 +104,8 @@ public class UserService {
     public Collection<User> findAllUserFriends(Long userId) {
         User user = getUserByIdOrThrow(userId);
 
+        //    User user = userStorage.getUser(userId);
+
         if (user.getFriends().isEmpty()) {
             throw new NotFoundException("Друзья не найдены");
         }
@@ -110,6 +113,12 @@ public class UserService {
         return user.getFriends().stream()
                 .map(userStorage::getUser)
                 .toList();
+    /*    return userStorage.getUserById(userId).getFriends().stream()
+                .map(userStorage::getUserById)
+                .toList();
+        return getUser(userId).getFriends().stream()
+                .map(this::getUser)
+                .collect(Collectors.toList()); */
     }
 
     public Collection<User> getCommonFriendsWithAnotherUser(Long userId, Long commonId) {
