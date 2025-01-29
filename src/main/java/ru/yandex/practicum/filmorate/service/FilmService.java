@@ -40,7 +40,7 @@ public class FilmService {
             validate(film);
             return filmStorage.updateFilm(film);
         }
-        throw new ValidationException("Фильм не найден " + film.getId());
+        throw new NotFoundException("Фильм не найден " + film.getId());
     }
 
     public void deleteFilm(Long id) {

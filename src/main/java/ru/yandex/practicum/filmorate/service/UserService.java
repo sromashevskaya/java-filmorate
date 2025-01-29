@@ -32,7 +32,7 @@ public class UserService {
             validate(user);
             return userStorage.updateUser(user);
         }
-        throw new ValidationException("Пользователь не найден " + user.getId());
+        throw new NotFoundException("Пользователь не найден " + user.getId());
     }
 
     public Collection<User> findAll() {
