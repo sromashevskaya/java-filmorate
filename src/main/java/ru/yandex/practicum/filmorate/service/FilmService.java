@@ -99,7 +99,7 @@ public class FilmService {
     }
 
 
-    public Collection<Film> getPopularFilms(Integer count) {
+    public List<Film> getPopularFilms(Integer count) {
         return filmStorage.findAll().stream()
                 .sorted(Comparator.comparingInt((Film film) -> film.getLikes().size()).reversed())
                 .limit(count)

@@ -95,7 +95,7 @@ public class UserService {
         User user = getUserByIdOrThrow(userId);
         User friend = getUserByIdOrThrow(friendId);
         if (!user.getFriends().contains(friendId)) {
-            throw new NotFoundException("Друг с id = " + friendId + " отсутствует в списке друзей");
+            return;
         }
         user.getFriends().remove(friendId);
         friend.getFriends().remove(userId);
