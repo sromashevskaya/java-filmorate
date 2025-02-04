@@ -13,6 +13,8 @@ import ru.yandex.practicum.filmorate.storage.UserStorage;
 import java.time.LocalDate;
 import java.util.*;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -36,11 +38,12 @@ public class FilmService {
         if (film.getId() == null) {
             throw new ValidationException("Укажите id фильма");
         }
-        if (filmStorage.getFilm(film.getId()) != null) {
-            validate(film);
-            return filmStorage.updateFilm(film);
-        }
-        throw new NotFoundException("Фильм не найден " + film.getId());
+
+        Optional.ofNullable(filmStorage.getFilm(film.getId()))
+                .orElseThrow(() -> new NotFoundException("Фильм не найден " + film.getId()));
+
+        validate(film);
+        return filmStorage.updateFilm(film);
     }
 
     public void deleteFilm(Long id) {
@@ -65,13 +68,10 @@ public class FilmService {
             throw new ValidationException("Продолжительность фильма должна быть положительным числом");
         }
     }
-
+    
     public Film getFilm(Long filmId) {
-        Film film = filmStorage.getFilm(filmId);
-        if (film == null) {
-            throw new NotFoundException("Фильм с указанным id не найден " + filmId);
-        }
-        return film;
+        return Optional.ofNullable(filmStorage.getFilm(filmId))
+                .orElseThrow(() -> new NotFoundException("Фильм с указанным id не найден " + filmId));
     }
 
     public void likeFilm(Long id, Long userId) {

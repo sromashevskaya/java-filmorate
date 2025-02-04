@@ -76,7 +76,6 @@ public class UserService {
         User user = getUserByIdOrThrow(userId);
         User friend = getUserByIdOrThrow(friendId);
         if (user.getFriends().contains(friendId)) {
-          //  throw new NotFoundException("Друг с указанным id уже существует");
             return;
         }
         user.getFriends().add(friendId);

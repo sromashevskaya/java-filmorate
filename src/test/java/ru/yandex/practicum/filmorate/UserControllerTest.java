@@ -12,10 +12,6 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class UserControllerTest {
-
-    // UserService userService = new UserService();
-  //  UserController userController = new UserController(userService);
-
     private final InMemoryUserStorage userStorage = new InMemoryUserStorage();
     private final UserService userService = new UserService(userStorage);
     private final UserController userController = new UserController(userService);
