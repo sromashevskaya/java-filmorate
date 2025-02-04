@@ -13,8 +13,6 @@ import ru.yandex.practicum.filmorate.storage.UserStorage;
 import java.time.LocalDate;
 import java.util.*;
 
-import java.util.Objects;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -68,7 +66,7 @@ public class FilmService {
             throw new ValidationException("Продолжительность фильма должна быть положительным числом");
         }
     }
-    
+
     public Film getFilm(Long filmId) {
         return Optional.ofNullable(filmStorage.getFilm(filmId))
                 .orElseThrow(() -> new NotFoundException("Фильм с указанным id не найден " + filmId));
