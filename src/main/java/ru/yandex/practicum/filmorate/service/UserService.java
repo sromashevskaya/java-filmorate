@@ -1,45 +1,42 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class UserService {
-    private Map<Integer, User> users = new HashMap<>();
-
     private int id = 1;
+
+    private final UserStorage userStorage;
 
     public User createUser(User user) {
         validate(user);
-        user.setId(id++);
-        users.put(user.getId(), user);
-        return user;
+        return userStorage.createUser(user);
     }
 
     public User updateUser(User user) {
         if (user.getId() == null) {
             throw new ValidationException("Укажите id пользователя");
         }
-        if (users.containsKey(user.getId())) {
-            User oldUser = users.get(user.getId());
+        if (userStorage.getUser(user.getId()) != null) {
             validate(user);
-            oldUser.setName(user.getName());
-            oldUser.setBirthday(user.getBirthday());
-            oldUser.setEmail(user.getEmail());
-            oldUser.setLogin(user.getLogin());
-            return oldUser;
+            return userStorage.updateUser(user);
         }
-        throw new ValidationException("Пользователь не найден " + user.getId());
+        throw new NotFoundException("Пользователь не найден " + user.getId());
     }
 
     public Collection<User> findAll() {
-        return users.values();
+        return userStorage.findAll();
     }
 
     private void validate(User user) {
@@ -57,5 +54,68 @@ public class UserService {
         if (!user.getBirthday().isBefore(LocalDate.now())) {
             throw new ValidationException("Дата рождения не может быть в будущем");
         }
+    }
+
+    public User getUser(Long userId) {
+        User user = userStorage.getUser(userId);
+        if (user != null) {
+            validate(user);
+            return user;
+        }
+        throw new NotFoundException("Пользователь с указанным id не найден " + userId);
+    }
+
+    public void deleteUser(Long userId) {
+        if (userStorage.getUser(userId) == null) {
+            throw new NotFoundException("Пользователь с указанным id не найден " + userId);
+        }
+        userStorage.deleteUser(userId);
+    }
+
+    public void createFriend(Long userId, Long friendId) {
+        User user = getUserByIdOrThrow(userId);
+        User friend = getUserByIdOrThrow(friendId);
+        if (user.getFriends().contains(friendId)) {
+            return;
+        }
+        user.getFriends().add(friendId);
+        friend.getFriends().add(userId);
+    }
+
+    private User getUserByIdOrThrow(Long userId) {
+        User user = userStorage.getUser(userId);
+        if (user == null) {
+            throw new NotFoundException("Пользователь с указанным id не найден " + userId);
+        }
+        return user;
+    }
+
+    public void deleteFriend(Long userId, Long friendId) {
+        User user = getUserByIdOrThrow(userId);
+        User friend = getUserByIdOrThrow(friendId);
+        if (!user.getFriends().contains(friendId)) {
+            return;
+        }
+        user.getFriends().remove(friendId);
+        friend.getFriends().remove(userId);
+    }
+
+    public Collection<User> findAllUserFriends(Long userId) {
+
+        User user = getUserByIdOrThrow(userId);
+
+        return user.getFriends().stream()
+                .map(userStorage::getUser)
+                .toList();
+    }
+
+    public Collection<User> getCommonFriendsWithAnotherUser(Long userId, Long commonId) {
+        User user = getUserByIdOrThrow(userId);
+        User otherUser = getUserByIdOrThrow(commonId);
+
+        return user.getFriends().stream()
+                .filter(otherUser.getFriends()::contains)
+                .map(userStorage::getUser)
+                .toList();
     }
 }
