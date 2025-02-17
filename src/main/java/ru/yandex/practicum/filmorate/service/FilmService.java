@@ -44,10 +44,6 @@ public class FilmService {
         return filmStorage.updateFilm(film);
     }
 
-    public void deleteFilm(Long id) {
-        filmStorage.deleteFilm(id);
-    }
-
     public Collection<Film> findAll() {
         return filmStorage.findAll();
     }
@@ -67,33 +63,27 @@ public class FilmService {
         }
     }
 
-    public Film getFilm(Long filmId) {
+    public Optional<Film> getFilm(Long filmId) {
         return Optional.ofNullable(filmStorage.getFilm(filmId))
                 .orElseThrow(() -> new NotFoundException("Фильм с указанным id не найден " + filmId));
     }
 
     public void likeFilm(Long id, Long userId) {
-        Film film = filmStorage.getFilm(id);
-        User user = userStorage.getUser(userId);
-        if (film == null) {
-            throw new NotFoundException("Фильм с указанным id не найден " + id);
-        }
-        if (user == null) {
-            throw new NotFoundException("Пользователь с указанным id не найден " + userId);
-        }
-        film.getLikes().add(userId);
+        filmStorage.getFilm(id)
+                .orElseThrow(() -> new NotFoundException("Фильм с указанным id не найден " + id));
+        userStorage.getUser(userId)
+                .orElseThrow(() -> new NotFoundException("Пользователь с указанным id не найден " + userId));
+
+        filmStorage.likeFilm(id, userId);
     }
 
     public void deleteLikeFilm(Long id, Long userId) {
-        Film film = filmStorage.getFilm(id);
-        User user = userStorage.getUser(userId);
-        if (film == null) {
-            throw new NotFoundException("Фильм с указанным id не найден " + id);
-        }
-        if (user == null) {
-            throw new NotFoundException("Пользователь с указанным id не найден " + userId);
-        }
-        film.getLikes().remove(userId);
+        filmStorage.getFilm(id)
+                .orElseThrow(() -> new NotFoundException("Фильм с указанным id не найден " + id));
+        userStorage.getUser(userId)
+                .orElseThrow(() -> new NotFoundException("Пользователь с указанным id не найден " + userId));
+
+        filmStorage.deleteLikeFilm(id, userId);
     }
 
 
