@@ -19,12 +19,12 @@ public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
             """;
 
     private static final String FIND_FILM_BY_ID_QUERY = """
-        SELECT f.id, f.name, f.description, f.release_date, f.duration, 
-               m.id AS mpa_id, m.name AS mpa_name
-        FROM films f
-        LEFT JOIN mpa m ON f.mpa_id = m.id
-        WHERE f.id = ?
-        """;
+            SELECT f.id, f.name, f.description, f.release_date, f.duration, 
+                   m.id AS mpa_id, m.name AS mpa_name
+            FROM films f
+            LEFT JOIN mpa m ON f.mpa_id = m.id
+            WHERE f.id = ?
+            """;
 
     private static final String INSERT_FILM_QUERY = """
             INSERT INTO films(name, description, release_date, duration, mpa_id)

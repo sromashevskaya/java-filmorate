@@ -18,7 +18,7 @@ public class MPAController {
 
     @GetMapping
     public Collection<MPA> findAll() {
-          return mpaService.findAll();
+        return mpaService.findAll();
     }
 
     @GetMapping("/{id}")

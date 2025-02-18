@@ -63,9 +63,9 @@ public class UserService {
     }
 
     public void createFriend(Long userId, Long friendId) {
-      //  Optional<User> user = getUserByIdOrThrow(userId);
-      //  Optional<User> friend = getUserByIdOrThrow(friendId);
-      //  userStorage.createFriend(userId, friendId);
+        //  Optional<User> user = getUserByIdOrThrow(userId);
+        //  Optional<User> friend = getUserByIdOrThrow(friendId);
+        //  userStorage.createFriend(userId, friendId);
 
         if (userStorage.getUser(userId).isEmpty() || userStorage.getUser(friendId).isEmpty()) {
             throw new NotFoundException("Один из пользователей не найден");
