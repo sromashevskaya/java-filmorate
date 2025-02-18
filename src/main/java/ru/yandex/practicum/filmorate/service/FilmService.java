@@ -34,7 +34,7 @@ public class FilmService {
     private final GenreStorage genreStorage;
     private final MPAStorage MPAStorage;
 
-    /*  public Film createFilm(Film film) {
+    public Film createFilm(Film film) {
         validate(film);
 
         if (film.getMpa() == null || film.getMpa().getId() == null) {
@@ -58,19 +58,14 @@ public class FilmService {
         film.setId((long) id++);
         filmStorage.createFilm(film);
         return film;
-    } */
+    } 
 
-    public Film createFilm(Film film) {
+ /*   public Film createFilm(Film film) {
         validate(film);
 
         if (film.getMpa() == null || film.getMpa().getId() == null) {
             throw new NotFoundException("MPA-рейтинг не указан");
         }
-
-        // Проверяем, существует ли такой MPA-рейтинг в базе
-        /*   MPA mpa = MPAStorage.getMPA(film.getMpa().getId())
-                .orElseThrow(() -> new NotFoundException("MPA не найден"));
-        film.setMpa(mpa); */ // Устанавливаем MPA перед сохранением
 
         if (film.getMpa() != null && film.getMpa().getId() != null) {
             film.setMpa(MPAStorage.getMPA(film.getMpa().getId())
@@ -96,7 +91,7 @@ public class FilmService {
         }
 
         return film;
-    }
+    } */
 
 
     public Film updateFilm(Film film) {

@@ -22,8 +22,7 @@ CREATE TABLE IF NOT EXISTS films (
     description VARCHAR(200),
     release_date DATE,
     duration INT NOT NULL CHECK (duration > 0),
-    mpa_id INT
-    FOREIGN KEY (mpa_id) REFERENCES mpa (id)
+    mpa_id INT REFERENCES mpa(id) ON DELETE SET NULL
 );
 
 -- Таблица лайков фильмов
