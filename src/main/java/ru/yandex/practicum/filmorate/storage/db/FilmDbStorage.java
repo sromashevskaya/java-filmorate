@@ -20,7 +20,7 @@ public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
             """;
 
     private static final String FIND_FILM_BY_ID_QUERY = """
-            SELECT f.id, f.name, f.description, f.release_date, f.duration, 
+            SELECT f.id, f.name, f.description, f.release_date, f.duration,
                    m.id AS mpa_id, m.name AS mpa_name
             FROM films f
             LEFT JOIN mpa m ON f.mpa_id = m.id
@@ -33,28 +33,28 @@ public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
             """;
 
     private static final String UPDATE_FILM_QUERY = """
-            UPDATE films 
+            UPDATE films
             SET name = ?, description = ?, release_date = ?, duration = ?, mpa_id = ?
             WHERE id = ?
             """;
 
     private static final String INSERT_GENRE_QUERY = """
-            INSERT INTO genre_films (genre_id, film_id) 
+            INSERT INTO genre_films (genre_id, film_id)
             VALUES (?, ?)
             """;
 
     private static final String DELETE_GENRE_QUERY = """
-            DELETE FROM genre_films 
+            DELETE FROM genre_films
             WHERE film_id = ?
             """;
 
     private static final String INSERT_LIKE_QUERY = """
-            INSERT INTO likes (film_id, user_id) 
+            INSERT INTO likes (film_id, user_id)
             VALUES (?, ?)
             """;
 
     private static final String DELETE_LIKE_QUERY = """
-            DELETE FROM likes 
+            DELETE FROM likes
             WHERE film_id = ? AND user_id = ?
             """;
 
