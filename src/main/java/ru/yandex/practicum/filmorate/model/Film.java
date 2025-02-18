@@ -16,6 +16,7 @@ public class Film {
     private LocalDate releaseDate;
     private Integer duration;
     private Set<Long> likes = new HashSet<>();
+  //  private Integer usersLikes;
     private MPA mpa;
     private List<Genre> genres = new ArrayList<>();
 }

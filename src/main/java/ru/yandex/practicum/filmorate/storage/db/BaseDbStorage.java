@@ -38,25 +38,6 @@ public class BaseDbStorage<T> {
         jdbc.update(query, id, id2);
     }
 
-    /*  protected Long insert(String query, Object... params) {
-        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbc.update(connection -> {
-            PreparedStatement ps = connection
-                    .prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            for (int idx = 0; idx < params.length; idx++) {
-                ps.setObject(idx + 1, params[idx]);
-            }
-            return ps;
-        }, keyHolder);
-
-        Long id = keyHolder.getKeyAs(Long.class);
-        if (id != null) {
-            return id;
-        } else {
-            throw new ValidationException("Не удалось сохранить данные");
-        }
-    } */
-
     protected Long insert(String query, Object... params) {
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         jdbc.update(connection -> {
@@ -75,7 +56,6 @@ public class BaseDbStorage<T> {
             throw new ValidationException("Не удалось сохранить данные");
         }
     }
-
 
     protected void update(String query, Object... params) {
         int rowsUpdated = jdbc.update(query, params);

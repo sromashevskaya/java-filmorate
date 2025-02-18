@@ -3,9 +3,9 @@ DROP TABLE IF EXISTS users, films, likes, genres, mpa, user_friends, genre_films
 -- Таблица пользователей
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
+    email VARCHAR(100) NOT NULL UNIQUE,
     login VARCHAR(100) NOT NULL UNIQUE,
     name VARCHAR(100),
-    email VARCHAR(100) NOT NULL UNIQUE,
     birthday DATE
 );
 
@@ -22,7 +22,8 @@ CREATE TABLE IF NOT EXISTS films (
     description VARCHAR(200),
     release_date DATE,
     duration INT NOT NULL CHECK (duration > 0),
-    mpa_id INT REFERENCES mpa(id) ON DELETE SET NULL
+    mpa_id INT
+    FOREIGN KEY (mpa_id) REFERENCES mpa (id)
 );
 
 -- Таблица лайков фильмов
