@@ -17,7 +17,7 @@ public class UserDbStorage extends BaseDbStorage<User> implements UserStorage {
             VALUES (?,?,?,?)
             """;
     private static final String UPDATE_QUERY = """
-            UPDATE users 
+            UPDATE users
             SET login = ?, name = ?, email = ?, birthday = ?
             WHERE id = ?
             """;
