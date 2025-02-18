@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.MPA;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.MPAStorage;
@@ -30,12 +31,8 @@ public class FilmService {
     private final GenreStorage genreStorage;
     private final MPAStorage mpaStorage;
 
-    public Film createFilm(Film film) {
+    /*  public Film createFilm(Film film) {
         validate(film);
-
-        if (film.getMpa() == null || film.getMpa().getId() == null) {
-            throw new NotFoundException("MPA-рейтинг не указан");
-        }
 
         // Проверяем, существует ли такой MPA-рейтинг в базе
         mpaStorage.getMPA(film.getMpa().getId())
@@ -47,14 +44,54 @@ public class FilmService {
                     .orElseThrow(() -> new NotFoundException("Жанр не найден"));
         }
 
-        if (film.getMpa() == null || mpaStorage.getMPA(film.getMpa().getId()).isEmpty()) {
-            throw new NotFoundException("Рейтинг MPA не найден");
-        }
-
         film.setId((long) id++);
         filmStorage.createFilm(film);
         return film;
+    } */
+
+    public Film createFilm(Film film) {
+        log.info("Входящий JSON: {}", film);
+        log.info("Создание фильма: {}", film);
+        try {
+            validate(film);
+
+            // Проверяем MPA
+            MPA mpa = null;
+            if (film.getMpa() != null && film.getMpa().getId() != null) {
+                mpa = mpaStorage.getMPA(film.getMpa().getId())
+                        .orElseThrow(() -> new NotFoundException("Mpa с id " + film.getMpa().getId() + " не найден"));
+            }
+
+            // Проверяем жанры
+            Set<Genre> uniqueGenres = new HashSet<>();
+            if (film.getGenres() != null) {
+                for (Genre genre : film.getGenres()) {
+                    Genre validGenre = genreStorage.getGenre(genre.getId())
+                            .orElseThrow(() -> new NotFoundException("Жанр с id " + genre.getId() + " не найден"));
+                    uniqueGenres.add(validGenre);
+                }
+            }
+
+            // Создаем фильм
+            film.setId((long) id++);
+            filmStorage.createFilm(film);
+            film.setMpa(mpa);
+            film.setGenres((List<Genre>) uniqueGenres);
+
+            // Сохраняем связи фильм-жанр
+            for (Genre genre : uniqueGenres) {
+                filmStorage.createGenre(genre.getId(), film.getId());
+            }
+
+            log.info("Фильм успешно создан: {}", film);
+            return film;
+
+        } catch (Exception e) {
+            log.error("Ошибка при создании фильма: {}", e.getMessage(), e);
+            throw e;
+        }
     }
+
 
  /*   public Film createFilm(Film film) {
         validate(film);
