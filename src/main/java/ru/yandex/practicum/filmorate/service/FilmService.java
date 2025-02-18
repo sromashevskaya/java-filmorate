@@ -28,7 +28,7 @@ public class FilmService {
     private final UserStorage userStorage;
 
     private final GenreStorage genreStorage;
-    private final MPAStorage MPAStorage;
+    private final MPAStorage mpaStorage;
 
     public Film createFilm(Film film) {
         validate(film);
@@ -38,7 +38,7 @@ public class FilmService {
         }
 
         // Проверяем, существует ли такой MPA-рейтинг в базе
-        MPAStorage.getMPA(film.getMpa().getId())
+        mpaStorage.getMPA(film.getMpa().getId())
                 .orElseThrow(() -> new NotFoundException("Mpa не найден"));
 
         List<Genre> genreList = film.getGenres();
@@ -47,7 +47,7 @@ public class FilmService {
                     .orElseThrow(() -> new NotFoundException("Жанр не найден"));
         }
 
-        if (film.getMpa() == null || MPAStorage.getMPA(film.getMpa().getId()).isEmpty()) {
+        if (film.getMpa() == null || mpaStorage.getMPA(film.getMpa().getId()).isEmpty()) {
             throw new NotFoundException("Рейтинг MPA не найден");
         }
 
