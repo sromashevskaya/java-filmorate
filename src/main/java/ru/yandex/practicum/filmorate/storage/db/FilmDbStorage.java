@@ -12,9 +12,10 @@ import java.util.Optional;
 
 @Repository
 public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
+
     private static final String FIND_ALL_FILM_QUERY = """
-            SELECT f.*, m.id AS mpa_id, m.name AS mpa_name 
-            FROM films f 
+            SELECT f.*, m.id AS mpa_id, m.name AS mpa_name
+            FROM films f
             LEFT JOIN mpa m ON f.mpa_id = m.id
             """;
 
@@ -84,28 +85,14 @@ public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
 
     @Override
     public Film createFilm(Film newFilm) {
-        Long id = insert(
-                INSERT_FILM_QUERY,
-                newFilm.getName(),
-                newFilm.getDescription(),
-                Date.valueOf(newFilm.getReleaseDate()),
-                newFilm.getDuration(),
-                newFilm.getMpa().getId()
-        );
+        Long id = insert(INSERT_FILM_QUERY, newFilm.getName(), newFilm.getDescription(), Date.valueOf(newFilm.getReleaseDate()), newFilm.getDuration(), newFilm.getMpa().getId());
         newFilm.setId(id);
         return newFilm;
     }
 
     @Override
     public Film updateFilm(Film newFilm) {
-        update(UPDATE_FILM_QUERY,
-                newFilm.getName(),
-                newFilm.getDescription(),
-                Date.valueOf(newFilm.getReleaseDate()),
-                newFilm.getDuration(),
-                newFilm.getMpa().getId(),
-                newFilm.getId()
-        );
+        update(UPDATE_FILM_QUERY, newFilm.getName(), newFilm.getDescription(), Date.valueOf(newFilm.getReleaseDate()), newFilm.getDuration(), newFilm.getMpa().getId(), newFilm.getId());
         return newFilm;
     }
 
