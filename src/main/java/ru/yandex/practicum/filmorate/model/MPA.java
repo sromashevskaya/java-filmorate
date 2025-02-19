@@ -7,9 +7,10 @@ public class MPA {
     private Long id;
     private String name;
 
-    public MPA() {} // Пустой конструктор
+    public MPA() {
+    }
 
-    public MPA(Long id, String name) {  // Добавляем нужный конструктор
+    public MPA(Long id, String name) {
         this.id = id;
         this.name = name;
     }
