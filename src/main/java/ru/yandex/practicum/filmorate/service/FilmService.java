@@ -15,6 +15,7 @@ import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,38 +32,18 @@ public class FilmService {
     private final GenreStorage genreStorage;
     private final MPAStorage mpaStorage;
 
-    /*  public Film createFilm(Film film) {
-        validate(film);
-
-        // Проверяем, существует ли такой MPA-рейтинг в базе
-        mpaStorage.getMPA(film.getMpa().getId())
-                .orElseThrow(() -> new NotFoundException("Mpa не найден"));
-
-        List<Genre> genreList = film.getGenres();
-        for (Genre genre : genreList) {
-            genreStorage.getGenre(genre.getId())
-                    .orElseThrow(() -> new NotFoundException("Жанр не найден"));
-        }
-
-        film.setId((long) id++);
-        filmStorage.createFilm(film);
-        return film;
-    } */
-
     public Film createFilm(Film film) {
         log.info("Входящий JSON: {}", film);
         log.info("Создание фильма: {}", film);
         try {
             validate(film);
 
-            // Проверяем MPA
             MPA mpa = null;
             if (film.getMpa() != null && film.getMpa().getId() != null) {
                 mpa = mpaStorage.getMPA(film.getMpa().getId())
                         .orElseThrow(() -> new NotFoundException("Mpa с id " + film.getMpa().getId() + " не найден"));
             }
 
-            // Проверяем жанры
             Set<Genre> uniqueGenres = new HashSet<>();
             if (film.getGenres() != null) {
                 for (Genre genre : film.getGenres()) {
@@ -72,13 +53,13 @@ public class FilmService {
                 }
             }
 
-            // Создаем фильм
             film.setId((long) id++);
             filmStorage.createFilm(film);
             film.setMpa(mpa);
-            film.setGenres((List<Genre>) uniqueGenres);
+            film.setGenres(new ArrayList<>(uniqueGenres.stream()
+                    .sorted(Comparator.comparing(Genre::getId))
+                    .collect(Collectors.toList())));
 
-            // Сохраняем связи фильм-жанр
             for (Genre genre : uniqueGenres) {
                 filmStorage.createGenre(genre.getId(), film.getId());
             }
@@ -91,41 +72,6 @@ public class FilmService {
             throw e;
         }
     }
-
-
- /*   public Film createFilm(Film film) {
-        validate(film);
-
-        if (film.getMpa() == null || film.getMpa().getId() == null) {
-            throw new NotFoundException("MPA-рейтинг не указан");
-        }
-
-        if (film.getMpa() != null && film.getMpa().getId() != null) {
-            film.setMpa(MPAStorage.getMPA(film.getMpa().getId())
-                    .orElseThrow(() -> new NotFoundException("Mpa не найден")));
-        }
-
-        if (film.getGenres() != null) {
-            Set<Genre> validGenres = new HashSet<>();
-            for (Genre genre : film.getGenres()) {
-                Genre validGenre = genreStorage.getGenre(genre.getId())
-                        .orElseThrow(() -> new NotFoundException("Жанр не найден"));
-                validGenres.add(validGenre); // Записываем только найденные жанры
-            }
-            film.setGenres((List<Genre>) validGenres);
-        }
-
-        film.setId((long) id++);
-        filmStorage.createFilm(film);
-
-        // Добавляем жанры в genre_films
-        if (film.getGenres() != null && !film.getGenres().isEmpty()) {
-            genreStorage.addGenresToFilm(film.getId(), (Set<Genre>) film.getGenres());
-        }
-
-        return film;
-    } */
-
 
     public Film updateFilm(Film film) {
         if (film.getId() == null) {
@@ -159,8 +105,23 @@ public class FilmService {
     }
 
     public Optional<Film> getFilm(Long filmId) {
-        return Optional.ofNullable(filmStorage.getFilm(filmId))
+        Film film = filmStorage.getFilm(filmId)
                 .orElseThrow(() -> new NotFoundException("Фильм с указанным id не найден " + filmId));
+
+        MPA mpa = mpaStorage.getMPAByFilmId(filmId)
+                .orElseThrow(() -> new NotFoundException("MPA для фильма с id " + filmId + " не найден"));
+
+        film.setMpa(mpa);
+
+        List<Genre> genres = genreStorage.getGenreByFilmId(filmId);
+
+        if (genres.isEmpty()) {
+            genres = new ArrayList<>();
+        }
+
+        film.setGenres(genres);
+
+        return Optional.of(film);
     }
 
     public void likeFilm(Long id, Long userId) {
@@ -181,12 +142,11 @@ public class FilmService {
         filmStorage.deleteLikeFilm(id, userId);
     }
 
-
     public List<Film> getPopularFilms(Integer count) {
-        return filmStorage.findAll().stream()
-                .sorted(Comparator.comparingInt((Film film) -> film.getLikes().size()).reversed())
-                .limit(count)
-                .toList();
+        Collection<Film> list = new ArrayList<>();
+        filmStorage.getPopularFilms(count).forEach(film -> {
+            list.add(film);
+        });
+        return (List<Film>) list;
     }
-
 }

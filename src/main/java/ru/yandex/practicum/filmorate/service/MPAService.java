@@ -23,7 +23,7 @@ public class MPAService {
     public MPA getMPA(Long mpaId) {
         Optional<MPA> mpa = mpaStorage.getMPA(mpaId);
         if (mpa.isEmpty()) {
-            throw new NotFoundException("Рейтинг не найден"); // Если MPA не найдено, выбрасываем исключение
+            throw new NotFoundException("Рейтинг не найден");
         }
 
         return mpaStorage.getMPA(mpaId)

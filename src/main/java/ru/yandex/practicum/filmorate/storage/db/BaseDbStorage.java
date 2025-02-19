@@ -49,9 +49,9 @@ public class BaseDbStorage<T> {
             return ps;
         }, keyHolder);
 
-        Number key = keyHolder.getKey(); // Получаем как Number
+        Number key = keyHolder.getKey();
         if (key != null) {
-            return key.longValue(); // Преобразуем в Long
+            return key.longValue();
         } else {
             throw new ValidationException("Не удалось сохранить данные");
         }

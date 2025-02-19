@@ -88,12 +88,6 @@ public class UserService {
         if (userStorage.getUser(friendId).isEmpty()) {
             throw new NotFoundException("Друг не найден");
         }
-
-        /*   List<User> friends = userStorage.getFriendsById(userId);
-        if (!friends.stream().anyMatch(f -> f.getId().equals(friendId))) {
-            throw new NotFoundException("Пользователь не является другом");
-        } */
-
         userStorage.deleteFriend(userId, friendId);
 
     }

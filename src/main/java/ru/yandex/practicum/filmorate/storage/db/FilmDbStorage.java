@@ -12,12 +12,7 @@ import java.util.Optional;
 
 @Repository
 public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
-
-    private static final String FIND_ALL_FILM_QUERY = """
-            SELECT f.*, m.id AS mpa_id, m.name AS mpa_name
-            FROM films f
-            LEFT JOIN mpa m ON f.mpa_id = m.id
-            """;
+    private static final String FIND_ALL_FILM_QUERY = "SELECT f.* FROM films f";
 
     private static final String FIND_FILM_BY_ID_QUERY = """
             SELECT f.id, f.name, f.description, f.release_date, f.duration,

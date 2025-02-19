@@ -74,7 +74,7 @@ public class UserDbStorage extends BaseDbStorage<User> implements UserStorage {
     public User createUser(User newUser) {
         Long id = insert(INSERT_QUERY,
                 newUser.getEmail(),
-                newUser.getLogin(),  // Теперь login идет перед name
+                newUser.getLogin(),
                 newUser.getName(),
                 newUser.getBirthday()
         );
