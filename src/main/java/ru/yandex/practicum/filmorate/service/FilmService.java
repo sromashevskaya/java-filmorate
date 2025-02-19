@@ -34,18 +34,17 @@ public class FilmService {
 
     public Film createFilm(Film film) {
         log.info("Входящий JSON: {}", film);
-        log.info("Создание фильма: {}", film);
         try {
             validate(film);
 
             MPA mpa = null;
-            if (film.getMpa() != null && film.getMpa().getId() != null) {
+            if (Objects.nonNull(film.getMpa()) && Objects.nonNull(film.getMpa().getId())) {
                 mpa = mpaStorage.getMPA(film.getMpa().getId())
                         .orElseThrow(() -> new NotFoundException("Mpa с id " + film.getMpa().getId() + " не найден"));
             }
 
             Set<Genre> uniqueGenres = new HashSet<>();
-            if (film.getGenres() != null) {
+            if (Objects.nonNull(film.getGenres())) {
                 for (Genre genre : film.getGenres()) {
                     Genre validGenre = genreStorage.getGenre(genre.getId())
                             .orElseThrow(() -> new NotFoundException("Жанр с id " + genre.getId() + " не найден"));
@@ -56,9 +55,9 @@ public class FilmService {
             film.setId((long) id++);
             filmStorage.createFilm(film);
             film.setMpa(mpa);
-            film.setGenres(new ArrayList<>(uniqueGenres.stream()
+            film.setGenres(uniqueGenres.stream()
                     .sorted(Comparator.comparing(Genre::getId))
-                    .collect(Collectors.toList())));
+                    .collect(Collectors.toList()));
 
             for (Genre genre : uniqueGenres) {
                 filmStorage.createGenre(genre.getId(), film.getId());
