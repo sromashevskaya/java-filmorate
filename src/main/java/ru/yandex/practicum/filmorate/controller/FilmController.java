@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -30,13 +31,8 @@ public class FilmController {
         return filmService.updateFilm(film);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteFilm(@PathVariable("id") Long id) {
-        filmService.deleteFilm(id);
-    }
-
     @GetMapping("/{filmId}")
-    public Film getFilm(@PathVariable Long filmId) {
+    public Optional<Film> getFilm(@PathVariable Long filmId) {
         return filmService.getFilm(filmId);
     }
 
